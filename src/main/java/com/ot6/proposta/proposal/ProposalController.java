@@ -1,6 +1,7 @@
 package com.ot6.proposta.proposal;
 
 import com.ot6.proposta.proposal.dto.NewProposalRequest;
+import com.ot6.proposta.shared.validation.handler.dto.FormErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +28,14 @@ public class ProposalController {
             UriComponentsBuilder uriBuilder
     ) {
         Proposal proposal = proposalRequest.toEntity();
+
+        if (proposal.exists(proposalRepository)) {
+            FormErrorResponse errorResponse = new FormErrorResponse("cpfOrCnpj", "Documento já em uso");
+            return ResponseEntity.unprocessableEntity().body(errorResponse);
+        }
+
         proposalRepository.save(proposal);
-        URI uri = uriBuilder.path("/proposal/{id}").buildAndExpand(proposal.getId()).toUri();
+        URI uri = proposal.generateProposalUri(uriBuilder);
         return ResponseEntity.created(uri).build();
     }
 }

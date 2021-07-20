@@ -1,4 +1,4 @@
-package com.ot6.proposta.shared.validation;
+package com.ot6.proposta.shared.validation.constraint;
 
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;

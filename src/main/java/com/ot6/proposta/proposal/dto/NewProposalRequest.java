@@ -1,7 +1,7 @@
 package com.ot6.proposta.proposal.dto;
 
 import com.ot6.proposta.proposal.Proposal;
-import com.ot6.proposta.shared.validation.CpfCnpj;
+import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
