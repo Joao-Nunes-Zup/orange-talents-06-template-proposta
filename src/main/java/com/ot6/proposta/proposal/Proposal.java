@@ -1,6 +1,9 @@
 package com.ot6.proposta.proposal;
 
+import com.ot6.proposta.proposal.dto.ProposalAnalysisReturn;
+import com.ot6.proposta.proposal.dto.ProposalDataForAnalysis;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
+import feign.FeignException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
@@ -43,6 +46,9 @@ public class Proposal {
     @Column(nullable = false)
     private BigDecimal salary;
 
+    @Enumerated(value = EnumType.STRING)
+    private Eligibility eligibility;
+
     public Proposal(
             @NotBlank @CpfCnpj String cpfOrCnpj,
             @NotBlank @Email String email,
@@ -65,4 +71,23 @@ public class Proposal {
     public URI generateProposalUri(UriComponentsBuilder uriBuilder) {
         return uriBuilder.path("/proposal/{id}").buildAndExpand(this.id).toUri();
     }
+
+    public ProposalDataForAnalysis getDataForAnalysis() {
+        return new ProposalDataForAnalysis(this.cpfOrCnpj, this.name, this.id);
+    }
+
+    public void checkEligibility(ProposalClient client) {
+        try {
+            ProposalAnalysisReturn analysisReturn = client.analyze(getDataForAnalysis());
+            this.eligibility = analysisReturn.getEligibility();
+        } catch (FeignException exception) {
+            this.eligibility = Eligibility.NAO_ELEGIVEL;
+        }
+    }
+
+    public boolean isEligible() {
+        return this.eligibility == Eligibility.ELEGIVEL;
+    }
+
+
 }

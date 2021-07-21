@@ -1,6 +1,8 @@
 package com.ot6.proposta.proposal;
 
 import com.ot6.proposta.proposal.dto.NewProposalRequest;
+import com.ot6.proposta.proposal.dto.ProposalAnalysisReturn;
+import com.ot6.proposta.proposal.dto.ProposalDataForAnalysis;
 import com.ot6.proposta.shared.validation.handler.dto.FormErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class ProposalController {
     @Autowired
     ProposalRepository proposalRepository;
 
+    @Autowired
+    ProposalClient client;
+
     @Transactional
     @PostMapping
     public ResponseEntity<?> create(
@@ -35,6 +40,16 @@ public class ProposalController {
         }
 
         proposalRepository.save(proposal);
+        proposal.checkEligibility(client);
+
+        if (!proposal.isEligible()) {
+            FormErrorResponse errorResponse = new FormErrorResponse(
+                    "eligibility",
+                    "Documento possui restrição financeira"
+            );
+            return ResponseEntity.unprocessableEntity().body(errorResponse);
+        }
+
         URI uri = proposal.generateProposalUri(uriBuilder);
         return ResponseEntity.created(uri).build();
     }
