@@ -72,10 +72,6 @@ public class Proposal {
         return uriBuilder.path("/proposal/{id}").buildAndExpand(this.id).toUri();
     }
 
-    public ProposalDataForAnalysis getDataForAnalysis() {
-        return new ProposalDataForAnalysis(this.cpfOrCnpj, this.name, this.id);
-    }
-
     public void checkEligibility(ProposalClient client) {
         try {
             ProposalAnalysisReturn analysisReturn = client.analyze(getDataForAnalysis());
@@ -83,6 +79,10 @@ public class Proposal {
         } catch (FeignException exception) {
             this.eligibility = Eligibility.NAO_ELEGIVEL;
         }
+    }
+
+    public ProposalDataForAnalysis getDataForAnalysis() {
+        return new ProposalDataForAnalysis(this.cpfOrCnpj, this.name, this.id);
     }
 
     public boolean isEligible() {
