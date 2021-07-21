@@ -31,11 +31,7 @@ public class Card {
         this.proposal = proposal;
     }
 
-    @Override
-    public String toString() {
-        return "Card{" +
-                "id='" + id + '\'' +
-                ", proposal=" + proposal +
-                '}';
+    public String getCardNumber() {
+        return this.id;
     }
 }

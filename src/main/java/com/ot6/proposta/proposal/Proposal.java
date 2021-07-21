@@ -2,10 +2,12 @@ package com.ot6.proposta.proposal;
 
 import com.ot6.proposta.card.Card;
 import com.ot6.proposta.card.dto.NewCardRequest;
+import com.ot6.proposta.card.dto.ProposalDetailsResponse;
 import com.ot6.proposta.proposal.dto.ProposalAnalysisReturn;
 import com.ot6.proposta.proposal.dto.ProposalDataForAnalysis;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
 import feign.FeignException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
@@ -72,6 +74,10 @@ public class Proposal {
         this.salary = salary;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public boolean exists(ProposalRepository proposalRepository) {
         Optional<Proposal> cpfOrCnpj = proposalRepository.findByCpfOrCnpj(this.cpfOrCnpj);
         return cpfOrCnpj.isPresent();
@@ -107,7 +113,16 @@ public class Proposal {
         this.card = card;
     }
 
-    public Long getId() {
-        return this.id;
+    public ProposalDetailsResponse toProposalDetailsResponse() {
+        return new ProposalDetailsResponse(
+                this.id,
+                this.cpfOrCnpj,
+                this.email,
+                this.name,
+                this.address,
+                this.salary,
+                this.eligibility,
+                this.card.getCardNumber()
+        );
     }
 }
