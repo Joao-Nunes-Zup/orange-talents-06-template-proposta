@@ -1,5 +1,7 @@
 package com.ot6.proposta.proposal;
 
+import com.ot6.proposta.card.Card;
+import com.ot6.proposta.card.dto.NewCardRequest;
 import com.ot6.proposta.proposal.dto.ProposalAnalysisReturn;
 import com.ot6.proposta.proposal.dto.ProposalDataForAnalysis;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
@@ -49,6 +51,13 @@ public class Proposal {
     @Enumerated(value = EnumType.STRING)
     private Eligibility eligibility;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_id", referencedColumnName = "id")
+    private Card card;
+
+    @Deprecated
+    public Proposal() {}
+
     public Proposal(
             @NotBlank @CpfCnpj String cpfOrCnpj,
             @NotBlank @Email String email,
@@ -90,4 +99,15 @@ public class Proposal {
     }
 
 
+    public NewCardRequest toNewCardRequest() {
+        return new NewCardRequest(this.cpfOrCnpj, this.name, this.id.toString());
+    }
+
+    public void associateCard(Card card) {
+        this.card = card;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
 }
