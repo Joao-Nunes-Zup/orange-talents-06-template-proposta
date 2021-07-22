@@ -1,6 +1,7 @@
 package com.ot6.proposta.shared.validation.handler;
 
 import com.ot6.proposta.shared.validation.handler.dto.FormErrorResponse;
+import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,10 +17,16 @@ public class ValidationErrorHandler {
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public List<FormErrorResponse> handle(MethodArgumentNotValidException exception) {
+    public List<FormErrorResponse> handleArgumentNotValid(MethodArgumentNotValidException exception) {
         return exception.getFieldErrors()
                 .stream()
                 .map(FormErrorResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({NotReadablePropertyException.class})
+    public FormErrorResponse handleNotReadable(NotReadablePropertyException exception) {
+        return new FormErrorResponse(exception.getPropertyName(), exception.getMessage());
     }
 }
