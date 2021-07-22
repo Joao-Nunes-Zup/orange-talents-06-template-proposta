@@ -18,10 +18,10 @@ public class ValidationErrorHandler {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public List<FormErrorResponse> handleArgumentNotValid(MethodArgumentNotValidException exception) {
-        return exception.getFieldErrors()
-                .stream()
-                .map(FormErrorResponse::new)
-                .collect(Collectors.toList());
+        return exception.getBindingResult().getFieldErrors()
+                    .stream()
+                    .map(FormErrorResponse::new)
+                    .collect(Collectors.toList());
     }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
