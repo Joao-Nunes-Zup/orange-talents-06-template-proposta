@@ -18,6 +18,9 @@ public class Card {
     @Id
     private String id;
 
+    @Enumerated(EnumType.STRING)
+    private CardStatus status = CardStatus.DESBLOQUEADO;
+
     @NotNull
     @Valid
     @OneToOne(mappedBy = "card")
@@ -41,5 +44,9 @@ public class Card {
     public boolean isBlocked(CardClient cardClient) throws FeignException {
         CardDetailsReturn cardReturn = cardClient.findCardDetails(this.id);
         return cardReturn.hasActiveBlockages();
+    }
+
+    public void blockCard() {
+        this.status = CardStatus.BLOQUEADO;
     }
 }
