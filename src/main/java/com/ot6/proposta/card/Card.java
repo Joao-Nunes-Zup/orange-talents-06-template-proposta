@@ -1,6 +1,9 @@
 package com.ot6.proposta.card;
 
+import com.ot6.proposta.card.dto.CardDetailsReturn;
 import com.ot6.proposta.proposal.Proposal;
+import feign.FeignException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -33,5 +36,10 @@ public class Card {
 
     public String getCardNumber() {
         return this.id;
+    }
+
+    public boolean isBlocked(CardClient cardClient) throws FeignException {
+        CardDetailsReturn cardReturn = cardClient.findCardDetails(this.id);
+        return cardReturn.hasActiveBlockages();
     }
 }

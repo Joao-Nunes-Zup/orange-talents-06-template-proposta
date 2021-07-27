@@ -4,7 +4,6 @@ import com.ot6.proposta.biometry.dto.NewBiometryRequest;
 import com.ot6.proposta.biometry.validation.BiometryShouldBeInBase64Format;
 import com.ot6.proposta.card.Card;
 import com.ot6.proposta.card.CardRepository;
-import com.ot6.proposta.shared.validation.handler.dto.FormErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;

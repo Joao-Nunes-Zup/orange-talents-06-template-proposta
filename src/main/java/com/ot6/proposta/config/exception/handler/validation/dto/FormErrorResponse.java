@@ -1,4 +1,4 @@
-package com.ot6.proposta.shared.validation.handler.dto;
+package com.ot6.proposta.config.exception.handler.validation.dto;
 
 import org.springframework.validation.FieldError;
 

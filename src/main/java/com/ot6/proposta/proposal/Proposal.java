@@ -84,7 +84,7 @@ public class Proposal {
     }
 
     public URI generateProposalUri(UriComponentsBuilder uriBuilder) {
-        return uriBuilder.path("/proposal/{id}").buildAndExpand(this.id).toUri();
+        return uriBuilder.path("/proposals/{id}").buildAndExpand(this.id).toUri();
     }
 
     public void checkEligibility(ProposalClient client) {
