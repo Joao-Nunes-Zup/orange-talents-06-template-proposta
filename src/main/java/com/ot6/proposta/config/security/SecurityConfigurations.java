@@ -14,6 +14,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .authorizeRequests(request ->
                 request
+                    .antMatchers(HttpMethod.GET, "/actuator/prometheus").hasRole("admin")
                     .antMatchers(HttpMethod.GET, "/proposals/**").hasAuthority("SCOPE_proposals:read")
                     .antMatchers(HttpMethod.POST, "/proposals").hasAuthority("SCOPE_proposals:write")
                     .antMatchers(HttpMethod.GET, "/biometrics/**").hasAuthority("SCOPE_biometrics:read")
