@@ -6,6 +6,7 @@ import com.ot6.proposta.card.Card;
 import com.ot6.proposta.card.CardClient;
 import com.ot6.proposta.card.CardRepository;
 import com.ot6.proposta.config.exception.handler.client.dto.ClientErrorResponse;
+import com.ot6.proposta.shared.utils.RequestIpRetriever;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.apache.HttpClientUtils;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,8 @@ public class BlockageController {
             return ResponseEntity.unprocessableEntity().body(errorResponse);
         }
 
-        Blockage blockage = new Blockage(getIpAddress(request), userAgent, card);
+        String ip = RequestIpRetriever.retrieve(request);
+        Blockage blockage = new Blockage(ip, userAgent, card);
 
         BlockageReturn blockageReturn =
                 cardClient.blockCard(cardId, new BlockageRequest("ProposalApi"));
@@ -62,15 +64,5 @@ public class BlockageController {
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-
-    private String getIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forward-For");
-
-        if(ipAddress == null || ipAddress.equals("")){
-            ipAddress = request.getRemoteAddr();
-        }
-
-        return ipAddress;
     }
 }
