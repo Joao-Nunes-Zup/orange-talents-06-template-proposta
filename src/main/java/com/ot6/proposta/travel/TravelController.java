@@ -1,10 +1,13 @@
 package com.ot6.proposta.travel;
 
 import com.ot6.proposta.card.Card;
+import com.ot6.proposta.card.CardClient;
 import com.ot6.proposta.card.CardRepository;
 import com.ot6.proposta.shared.utils.RequestIpRetriever;
+import com.ot6.proposta.travel.dto.NewTravelNotificationReturn;
 import com.ot6.proposta.travel.dto.NewTravelRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,9 @@ public class TravelController {
     @Autowired
     TravelRepository travelRepository;
 
+    @Autowired
+    CardClient cardClient;
+
     @Transactional
     @PostMapping("/travels/{cardId}")
     public ResponseEntity<?> create(
@@ -37,11 +43,13 @@ public class TravelController {
         }
 
         Card card = possibleCard.get();
-
         String ip = RequestIpRetriever.retrieve(request);
         Travel travel = travelRequest.toEntity(ip, userAgent, card);
-        travelRepository.save(travel);
 
+        NewTravelNotificationReturn notificationReturn =
+                cardClient.newTravelNotification(cardId, travel.toNewTravelNotificationRequest());
+
+        travelRepository.save(travel);
         return ResponseEntity.ok().build();
     }
 }

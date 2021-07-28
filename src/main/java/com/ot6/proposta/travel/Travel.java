@@ -1,6 +1,7 @@
 package com.ot6.proposta.travel;
 
 import com.ot6.proposta.card.Card;
+import com.ot6.proposta.travel.dto.NewTravelNotificationRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
@@ -47,5 +48,9 @@ public class Travel {
         this.ipRequestAddress = ipRequestAddress;
         this.userAgent = userAgent;
         this.card = card;
+    }
+
+    public NewTravelNotificationRequest toNewTravelNotificationRequest() {
+        return new NewTravelNotificationRequest(this.destination, this.endsIn);
     }
 }

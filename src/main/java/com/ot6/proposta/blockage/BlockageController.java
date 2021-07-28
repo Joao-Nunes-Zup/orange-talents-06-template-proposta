@@ -57,12 +57,8 @@ public class BlockageController {
         BlockageReturn blockageReturn =
                 cardClient.blockCard(cardId, new BlockageRequest("ProposalApi"));
 
-        if (blockageReturn.getResult().equals("BLOQUEADO")) {
-            card.blockCard();
-            blockageRepository.save(blockage);
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        card.blockCard();
+        blockageRepository.save(blockage);
+        return ResponseEntity.ok().build();
     }
 }

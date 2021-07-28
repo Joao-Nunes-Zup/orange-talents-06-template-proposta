@@ -5,6 +5,8 @@ import com.ot6.proposta.blockage.dto.BlockageReturn;
 import com.ot6.proposta.card.dto.CardDetailsReturn;
 import com.ot6.proposta.card.dto.NewCardRequest;
 import com.ot6.proposta.card.dto.NewCardReturn;
+import com.ot6.proposta.travel.dto.NewTravelNotificationRequest;
+import com.ot6.proposta.travel.dto.NewTravelNotificationReturn;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,4 +35,14 @@ public interface CardClient {
             consumes = "application/json"
     )
     BlockageReturn blockCard(@PathVariable String id, BlockageRequest proposalApi);
+
+    @RequestMapping(
+            path = "/api/cartoes/{id}/avisos",
+            method = RequestMethod.POST,
+            consumes = "application/json"
+    )
+    NewTravelNotificationReturn newTravelNotification(
+            @PathVariable String id,
+            NewTravelNotificationRequest notificationRequest
+    );
 }
