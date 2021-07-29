@@ -32,7 +32,7 @@ public class Biometry {
         this.card = card;
     }
 
-    public URI generateProposalUri(UriComponentsBuilder uriBuilder) {
-        return uriBuilder.path("/biometry/{id}").buildAndExpand(this.id).toUri();
+    public URI generateUri(UriComponentsBuilder uriBuilder) {
+        return uriBuilder.path("/biometrics/{id}").buildAndExpand(this.id).toUri();
     }
 }

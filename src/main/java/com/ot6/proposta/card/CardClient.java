@@ -6,7 +6,7 @@ import com.ot6.proposta.card.dto.CardDetailsReturn;
 import com.ot6.proposta.card.dto.NewCardRequest;
 import com.ot6.proposta.card.dto.NewCardReturn;
 import com.ot6.proposta.travel.dto.NewTravelNotificationRequest;
-import com.ot6.proposta.travel.dto.NewTravelNotificationReturn;
+import com.ot6.proposta.wallet.dto.AssociateToWalletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,8 +41,18 @@ public interface CardClient {
             method = RequestMethod.POST,
             consumes = "application/json"
     )
-    NewTravelNotificationReturn newTravelNotification(
+    void newTravelNotification(
             @PathVariable String id,
             NewTravelNotificationRequest notificationRequest
+    );
+
+    @RequestMapping(
+            path = "/api/cartoes/{id}/carteiras",
+            method = RequestMethod.POST,
+            consumes = "application/json"
+    )
+    void associateToWallet(
+            @PathVariable String id,
+            AssociateToWalletRequest associateToWalletRequest
     );
 }

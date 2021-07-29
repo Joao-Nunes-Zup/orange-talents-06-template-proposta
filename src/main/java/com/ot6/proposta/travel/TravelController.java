@@ -46,8 +46,7 @@ public class TravelController {
         String ip = RequestIpRetriever.retrieve(request);
         Travel travel = travelRequest.toEntity(ip, userAgent, card);
 
-        NewTravelNotificationReturn notificationReturn =
-                cardClient.newTravelNotification(cardId, travel.toNewTravelNotificationRequest());
+         cardClient.newTravelNotification(cardId, travel.toNewTravelNotificationRequest());
 
         travelRepository.save(travel);
         return ResponseEntity.ok().build();

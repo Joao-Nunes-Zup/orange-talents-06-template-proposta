@@ -83,10 +83,6 @@ public class Proposal {
         return cpfOrCnpj.isPresent();
     }
 
-    public URI generateProposalUri(UriComponentsBuilder uriBuilder) {
-        return uriBuilder.path("/proposals/{id}").buildAndExpand(this.id).toUri();
-    }
-
     public void checkEligibility(ProposalClient client) {
         try {
             ProposalAnalysisReturn analysisReturn = client.analyze(getDataForAnalysis());
@@ -124,5 +120,9 @@ public class Proposal {
                 this.eligibility,
                 this.card.getCardNumber()
         );
+    }
+
+    public URI generateUri(UriComponentsBuilder uriBuilder) {
+        return uriBuilder.path("/proposals/{id}").buildAndExpand(this.id).toUri();
     }
 }

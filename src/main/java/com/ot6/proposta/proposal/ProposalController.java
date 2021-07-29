@@ -46,7 +46,7 @@ public class ProposalController {
             return ResponseEntity.unprocessableEntity().body(errorResponse);
         }
 
-        URI uri = proposal.generateProposalUri(uriBuilder);
+        URI uri = proposal.generateUri(uriBuilder);
         return ResponseEntity.created(uri).build();
     }
 

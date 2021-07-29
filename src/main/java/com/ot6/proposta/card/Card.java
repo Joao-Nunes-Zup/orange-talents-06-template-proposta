@@ -2,13 +2,19 @@ package com.ot6.proposta.card;
 
 import com.ot6.proposta.card.dto.CardDetailsReturn;
 import com.ot6.proposta.proposal.Proposal;
+import com.ot6.proposta.wallet.Wallet;
+import com.ot6.proposta.wallet.WalletRepository;
+import com.ot6.proposta.wallet.WalletType;
 import feign.FeignException;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cards")
@@ -25,6 +31,11 @@ public class Card {
     @Valid
     @OneToOne(mappedBy = "card")
     private Proposal proposal;
+
+    @NotNull
+    @Valid
+    @OneToMany(mappedBy = "card")
+    private Set<Wallet> wallets = new HashSet<>();
 
     @Deprecated
     public Card() {}
@@ -48,5 +59,14 @@ public class Card {
 
     public void blockCard() {
         this.status = CardStatus.BLOQUEADO;
+    }
+
+    public boolean isAssociatedWithPaypal(CardRepository cardRepository) {
+        List<Card> cards = cardRepository.findAllByIdAndWalletType(this.id, WalletType.PAYPALL);
+        Assert.state(
+            cards.size() <= 1,
+            "Múltiplos cartões associados a um mesmo serviço de pagamento: " + WalletType.PAYPALL
+        );
+        return cards.size() == 1;
     }
 }

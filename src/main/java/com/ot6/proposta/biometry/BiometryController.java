@@ -49,7 +49,7 @@ public class BiometryController {
         Biometry biometry = biometryRequest.toEntity(card.get());
         biometryRepository.save(biometry);
 
-        URI uri = biometry.generateProposalUri(uriBuilder);
+        URI uri = biometry.generateUri(uriBuilder);
         return ResponseEntity.created(uri).build();
     }
 }
