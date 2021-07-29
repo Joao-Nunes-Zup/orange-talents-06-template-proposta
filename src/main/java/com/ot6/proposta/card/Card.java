@@ -61,11 +61,11 @@ public class Card {
         this.status = CardStatus.BLOQUEADO;
     }
 
-    public boolean isAssociatedWithPaypal(CardRepository cardRepository) {
-        List<Card> cards = cardRepository.findAllByIdAndWalletType(this.id, WalletType.PAYPALL);
+    public boolean isAssociatedWithWalletType(WalletType walletType, CardRepository cardRepository) {
+        List<Card> cards = cardRepository.findAllByIdAndWalletType(this.id, walletType);
         Assert.state(
             cards.size() <= 1,
-            "Múltiplos cartões associados a um mesmo serviço de pagamento: " + WalletType.PAYPALL
+            "Múltiplos cartões associados a um mesmo serviço de pagamento: " + walletType
         );
         return cards.size() == 1;
     }

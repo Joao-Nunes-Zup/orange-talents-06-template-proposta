@@ -1,5 +1,5 @@
 package com.ot6.proposta.wallet;
 
 public enum WalletType {
-    PAYPALL
+    PAY_PALL, SAMSUNG_PAY
 }

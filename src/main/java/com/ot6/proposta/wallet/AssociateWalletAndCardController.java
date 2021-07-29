@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/wallets")
 public class AssociateWalletAndCardController {
 
     @Autowired
@@ -28,10 +29,29 @@ public class AssociateWalletAndCardController {
     CardClient cardClient;
 
     @Transactional
-    @PostMapping("/wallets/{cardId}")
+    @PostMapping("/pay_pall/{cardId}")
     public ResponseEntity<?> associateWithPayPal(
             @PathVariable String cardId,
             @RequestBody @Valid NewWalletAndCardAssociationRequest newWalletRequest,
+            UriComponentsBuilder uriBuilder
+    ) {
+        return associate(cardId, newWalletRequest, WalletType.PAY_PALL, uriBuilder);
+    }
+
+    @Transactional
+    @PostMapping("/samsung_pay/{cardId}")
+    public ResponseEntity<?> associateWithSamsungPay(
+            @PathVariable String cardId,
+            @RequestBody @Valid NewWalletAndCardAssociationRequest newWalletRequest,
+            UriComponentsBuilder uriBuilder
+    ) {
+        return associate(cardId, newWalletRequest, WalletType.SAMSUNG_PAY, uriBuilder);
+    }
+
+    private ResponseEntity<?> associate(
+            String cardId,
+            NewWalletAndCardAssociationRequest newWalletRequest,
+            WalletType walletType,
             UriComponentsBuilder uriBuilder
     ) {
         Optional<Card> possibleCard = cardRepository.findById(cardId);
@@ -42,18 +62,18 @@ public class AssociateWalletAndCardController {
 
         Card card = possibleCard.get();
 
-        if (card.isAssociatedWithPaypal(cardRepository)) {
+        if (card.isAssociatedWithWalletType(walletType, cardRepository)) {
             FormErrorResponse errorResponse =
                     new FormErrorResponse("card", "Cartão já associado ao PayPal.");
             return ResponseEntity.unprocessableEntity().body(errorResponse);
         }
 
-        Wallet wallet = newWalletRequest.toEntity(card, WalletType.PAYPALL);
+        Wallet wallet = newWalletRequest.toEntity(card, WalletType.PAY_PALL);
         AssociateToWalletRequest walletRequest = wallet.toAssociateToWalletRequest();
 
         cardClient.associateToWallet(cardId, walletRequest);
         walletRepository.save(wallet);
 
-        return ResponseEntity.ok(wallet.generateUri(uriBuilder));
+        return ResponseEntity.created(wallet.generateUri(uriBuilder)).build();
     }
 }
