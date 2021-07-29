@@ -8,11 +8,8 @@ import com.ot6.proposta.card.CardRepository;
 import com.ot6.proposta.config.exception.handler.client.dto.ClientErrorResponse;
 import com.ot6.proposta.shared.utils.RequestIpRetriever;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.ribbon.apache.HttpClientUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
