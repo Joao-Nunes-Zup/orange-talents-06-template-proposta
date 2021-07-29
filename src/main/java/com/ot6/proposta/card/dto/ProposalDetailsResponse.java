@@ -1,6 +1,8 @@
 package com.ot6.proposta.card.dto;
 
 import com.ot6.proposta.proposal.Eligibility;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.math.BigDecimal;
 
@@ -23,10 +25,15 @@ public class ProposalDetailsResponse {
             String address,
             BigDecimal salary,
             Eligibility eligibility,
-            String cardNumber
+            String cardNumber,
+            String password,
+            String key
     ) {
+        TextEncryptor textEncryptor = Encryptors.text(password, key);
+        String decryptedDocument = textEncryptor.decrypt(cpfOrCnpj);
+
         this.id = id;
-        this.cpfOrCnpj = cpfOrCnpj;
+        this.cpfOrCnpj = decryptedDocument;
         this.email = email;
         this.name = name;
         this.address = address;

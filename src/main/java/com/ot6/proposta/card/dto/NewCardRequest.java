@@ -5,6 +5,8 @@ import com.ot6.proposta.proposal.Proposal;
 import com.ot6.proposta.proposal.ProposalRepository;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.AssertTrue;
@@ -29,9 +31,14 @@ public class NewCardRequest {
     public NewCardRequest(
             @NotBlank @CpfCnpj String documento,
             @NotBlank @CreditCardNumber String nome,
-            @NotNull @Positive String idProposta
+            @NotNull @Positive String idProposta,
+            @NotBlank String password,
+            @NotBlank String key
     ) {
-        this.documento = documento;
+        TextEncryptor textEncryptor = Encryptors.text(password, key);
+        String decryptedDocument = textEncryptor.decrypt(documento);
+
+        this.documento = decryptedDocument;
         this.nome = nome;
         this.idProposta = idProposta;
     }

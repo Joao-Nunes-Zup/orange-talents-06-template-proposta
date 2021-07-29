@@ -2,6 +2,8 @@ package com.ot6.proposta.proposal.dto;
 
 import com.ot6.proposta.proposal.Proposal;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -43,24 +45,17 @@ public class NewProposalRequest {
         this.salary = salary;
     }
 
-    @Override
-    public String toString() {
-        return "NewProposalRequest{" +
-                "cpfOrCnpj='" + cpfOrCnpj + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", salary=" + salary +
-                '}';
-    }
+    public Proposal toEntity(String password, String key) {
 
-    public Proposal toEntity() {
+
         return new Proposal(
                 this.cpfOrCnpj,
                 this.email,
                 this.name,
                 this.address,
-                this.salary
+                this.salary,
+                password,
+                key
         );
     }
 }

@@ -8,6 +8,8 @@ import com.ot6.proposta.proposal.dto.ProposalDataForAnalysis;
 import com.ot6.proposta.shared.validation.constraint.CpfCnpj;
 import feign.FeignException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
@@ -65,9 +67,14 @@ public class Proposal {
             @NotBlank @Email String email,
             @NotBlank String name,
             @NotBlank String address,
-            @NotNull @Positive BigDecimal salary
+            @NotNull @Positive BigDecimal salary,
+            @NotBlank String password,
+            @NotBlank String key
     ) {
-        this.cpfOrCnpj = cpfOrCnpj;
+        TextEncryptor encryptor = Encryptors.text(password, key);
+        String encryptedDocument = encryptor.encrypt(cpfOrCnpj);
+
+        this.cpfOrCnpj = encryptedDocument;
         this.email = email;
         this.name = name;
         this.address = address;
@@ -101,15 +108,15 @@ public class Proposal {
     }
 
 
-    public NewCardRequest toNewCardRequest() {
-        return new NewCardRequest(this.cpfOrCnpj, this.name, this.id.toString());
+    public NewCardRequest toNewCardRequest(String password, String key) {
+        return new NewCardRequest(this.cpfOrCnpj, this.name, this.id.toString(), password, key);
     }
 
     public void associateCard(Card card) {
         this.card = card;
     }
 
-    public ProposalDetailsResponse toProposalDetailsResponse() {
+    public ProposalDetailsResponse toProposalDetailsResponse(String password, String key) {
         return new ProposalDetailsResponse(
                 this.id,
                 this.cpfOrCnpj,
@@ -118,7 +125,9 @@ public class Proposal {
                 this.address,
                 this.salary,
                 this.eligibility,
-                this.card.getCardNumber()
+                this.card.getCardNumber(),
+                password,
+                key
         );
     }
 

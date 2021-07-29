@@ -5,6 +5,7 @@ import com.ot6.proposta.card.dto.NewCardReturn;
 import com.ot6.proposta.proposal.Proposal;
 import com.ot6.proposta.proposal.ProposalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -21,6 +22,12 @@ public class AssociateCardToProposalPeriodically {
     @Autowired
     CardClient client;
 
+    @Value("${encrypt.password}")
+    private String password;
+
+    @Value("${encrypt.password}")
+    private String key;
+
     @Scheduled(fixedDelay = 60000)
     @Transactional
     public void associate() {
@@ -28,7 +35,7 @@ public class AssociateCardToProposalPeriodically {
                 proposalRepository.findUnrestrictedProposalsWithoutCard();
 
         proposalsWithoutCard.forEach(proposal -> {
-            NewCardRequest cardRequest = proposal.toNewCardRequest();
+            NewCardRequest cardRequest = proposal.toNewCardRequest(password, key);
 
             try {
                 NewCardReturn cardReturn = client.newCard(cardRequest);

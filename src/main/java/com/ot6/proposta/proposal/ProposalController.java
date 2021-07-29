@@ -1,8 +1,10 @@
 package com.ot6.proposta.proposal;
 
+import com.ot6.proposta.card.dto.ProposalDetailsResponse;
 import com.ot6.proposta.proposal.dto.NewProposalRequest;
 import com.ot6.proposta.config.exception.handler.validation.dto.FormErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,13 +24,19 @@ public class ProposalController {
     @Autowired
     ProposalClient client;
 
+    @Value("${encrypt.password}")
+    private String password;
+
+    @Value("${encrypt.password}")
+    private String key;
+
     @Transactional
     @PostMapping
     public ResponseEntity<?> create(
             @RequestBody @Valid NewProposalRequest proposalRequest,
             UriComponentsBuilder uriBuilder
     ) {
-        Proposal proposal = proposalRequest.toEntity();
+        Proposal proposal = proposalRequest.toEntity(password, key);
 
         if (proposal.exists(proposalRepository)) {
             FormErrorResponse errorResponse = new FormErrorResponse("cpfOrCnpj", "Documento já em uso");
@@ -58,6 +66,9 @@ public class ProposalController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(proposal.get().toProposalDetailsResponse());
+        ProposalDetailsResponse proposalDetailsResponse =
+                proposal.get().toProposalDetailsResponse(password, key);
+
+        return ResponseEntity.ok(proposalDetailsResponse);
     }
 }
